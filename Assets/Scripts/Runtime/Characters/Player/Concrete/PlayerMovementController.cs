@@ -14,6 +14,7 @@ public class PlayerMovementController : MonoBehaviour
     #endregion
 
     private PlayerAnimationController _playerAnimationController;
+    private CharacterAttackController _characterAttackController;
     
     public float MovementMultiplier;
      
@@ -31,6 +32,7 @@ public class PlayerMovementController : MonoBehaviour
     protected virtual void Awake()
     {
         _playerAnimationController = GetComponent<PlayerAnimationController>();
+        _characterAttackController = GetComponent<CharacterAttackController>();
         Rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -62,16 +64,27 @@ public class PlayerMovementController : MonoBehaviour
 
     private void CharacterRotation()
     {
-        if (InputManager.Instance.InputController.Joystick.HasInput) return;
-        _currentRot = transform.rotation;
-        _targetRotAngle = new Vector3(InputManager.Instance.InputController.Joystick.Horizontal, Rigidbody.velocity.y, InputManager.Instance.InputController.Joystick.Vertical)
-            .normalized;
-        if (_targetRotAngle == Vector3.zero) _targetRotAngle = new Vector3(0, 0.001f, 0);
-        Quaternion lookRotation = Quaternion.LookRotation(_targetRotAngle, Vector3.up);
-        lookRotation.x = 0f;
-        lookRotation.z = 0f;
-        transform.rotation = Quaternion.Lerp(_currentRot, lookRotation,
-            Time.fixedDeltaTime * RotationMultiplier);
+       
+        if (_characterAttackController.HasAliveTargetInRange())
+        {
+            transform.LookAt(new Vector3(
+                _characterAttackController._target.transform.position.x,
+                transform.position.y,
+                _characterAttackController._target.transform.position.z));
+        }
+        else
+        {
+            if (InputManager.Instance.InputController.Joystick.HasInput) return;
+            _currentRot = transform.rotation;
+            _targetRotAngle = new Vector3(InputManager.Instance.InputController.Joystick.Horizontal, Rigidbody.velocity.y, InputManager.Instance.InputController.Joystick.Vertical)
+                .normalized;
+            if (_targetRotAngle == Vector3.zero) _targetRotAngle = new Vector3(0, 0.001f, 0);
+            Quaternion lookRotation = Quaternion.LookRotation(_targetRotAngle, Vector3.up);
+            lookRotation.x = 0f;
+            lookRotation.z = 0f;
+            transform.rotation = Quaternion.Lerp(_currentRot, lookRotation,
+                Time.fixedDeltaTime * RotationMultiplier);
+        }
     }
 
 

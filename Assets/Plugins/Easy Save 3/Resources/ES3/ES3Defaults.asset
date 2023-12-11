@@ -30,9 +30,9 @@ MonoBehaviour:
     serializationDepthLimit: 64
     assemblyNames:
     - Assembly-CSharp-firstpass
+    - Assembly-CSharp
     - Cinemachine
     - MoreMountains.NiceVibrations.Demos
-    - Assembly-CSharp
     - CW.Common
     - MK.Toon.Editor
     - MoreMountains.NiceVibrations.Editor

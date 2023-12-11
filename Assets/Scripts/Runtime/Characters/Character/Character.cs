@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class Character : MonoBehaviour, ICharacter
 {
     public CharacterData CharacterData;
-    public int MaxHealth { get; private set; }
+    public int MaxHealth { get;  set; }
     private int _currentHealth;
 
     public virtual void Awake()
