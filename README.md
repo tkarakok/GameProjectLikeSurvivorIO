@@ -1,1 +1,1 @@
-# GameProjectLikeSurvivorIO
+# GameCoreProject
