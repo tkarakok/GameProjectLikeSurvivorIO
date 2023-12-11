@@ -19,7 +19,6 @@ public class PlayerMovementController : MonoBehaviour
      
     public float RotationMultiplier;
 
-    public bool PreventMovement;
 
 
     #region Init Variables Rotation
@@ -37,33 +36,14 @@ public class PlayerMovementController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(horizontalInput, 0, verticalInput);
+        
+        Vector3 movement = new Vector3(InputManager.Instance.InputController.Joystick.Horizontal, 0, InputManager.Instance.InputController.Joystick.Vertical);
         movement.Normalize();
         ControllerLogic(movement);
         _playerAnimationController.SetMovementAnim(movement.normalized.magnitude);
-        
-        #region Anims
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            _playerAnimationController.SeBuffAnim();
-        }
-        else if (Input.GetKeyDown(KeyCode.C))
-        {
-            PreventMovement = true;
-            _playerAnimationController.SeLootAnim();
-        }
-        else if (Input.GetKeyDown(KeyCode.V))
-        {
-            _playerAnimationController.SeHitAnim();
-        }
-        
-        #endregion
+       
     }
 
-
-    
     protected void ControllerLogic(Vector3 movement)
     {
         CharacterMovement(movement);
@@ -72,19 +52,19 @@ public class PlayerMovementController : MonoBehaviour
 
     private void CharacterMovement(Vector3 _direction)
     {
-        Rigidbody.velocity =  transform.TransformDirection(
-            new Vector3(
-                _direction.x * MovementMultiplier,
-                Rigidbody.velocity.y,
-                _direction.z * MovementMultiplier
-                ));
+        Rigidbody.velocity = new Vector3(
+            _direction.x * MovementMultiplier,
+            Rigidbody.velocity.y,
+            _direction.z * MovementMultiplier
+        );
     }
 
 
     private void CharacterRotation()
     {
+        if (InputManager.Instance.InputController.Joystick.HasInput) return;
         _currentRot = transform.rotation;
-        _targetRotAngle = new Vector3(InputController.Joystick.Horizontal, Rigidbody.velocity.y, InputController.Joystick.Vertical)
+        _targetRotAngle = new Vector3(InputManager.Instance.InputController.Joystick.Horizontal, Rigidbody.velocity.y, InputManager.Instance.InputController.Joystick.Vertical)
             .normalized;
         if (_targetRotAngle == Vector3.zero) _targetRotAngle = new Vector3(0, 0.001f, 0);
         Quaternion lookRotation = Quaternion.LookRotation(_targetRotAngle, Vector3.up);

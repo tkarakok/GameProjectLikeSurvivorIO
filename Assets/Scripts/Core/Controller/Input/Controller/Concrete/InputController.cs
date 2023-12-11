@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Lean.Touch;
@@ -8,7 +9,7 @@ public class InputController : MonoBehaviour, IInputController
     public InputType InputType;
     public JoystickType JoystickType;
 
-    public static Joystick Joystick;
+    public Joystick Joystick { get; private set; }
     
     /// <summary>
     /// Current Vector2 of finger/mouse movement 
@@ -17,10 +18,17 @@ public class InputController : MonoBehaviour, IInputController
 
     public bool PreventInput { get; private set; }
 
+    private void Start()
+    {
+        if (InputType == InputType.Joystick || InputType == InputType.Both)
+        {
+            Joystick = FindObjectOfType<Joystick>(true);
+        }
+    }
 
     private void OnEnable()
     {
-        if (InputType == InputType.Touch)
+        if (InputType == InputType.Touch|| InputType == InputType.Both)
         {
             LeanTouch.OnFingerDown += OnFingerDown;
             LeanTouch.OnFingerUpdate += OnFingerUpdate;
@@ -30,7 +38,7 @@ public class InputController : MonoBehaviour, IInputController
 
     protected void OnDisable()
     {
-        if (InputType == InputType.Touch)
+        if (InputType == InputType.Touch|| InputType == InputType.Both)
         {
             LeanTouch.OnFingerDown -= OnFingerDown;
             LeanTouch.OnFingerUpdate -= OnFingerUpdate;
@@ -42,6 +50,7 @@ public class InputController : MonoBehaviour, IInputController
 
     private void OnFingerDown(LeanFinger finger)
     {
+        PreventInput = false;
         if (PreventInput)
         {
             SetDeltaInputVector(Vector2.zero);
@@ -67,6 +76,7 @@ public class InputController : MonoBehaviour, IInputController
     private void OnFingerUp(LeanFinger finger)
     {
         SetDeltaInputVector(Vector2.zero);
+        PreventInput = true;
     }
 
     #endregion
