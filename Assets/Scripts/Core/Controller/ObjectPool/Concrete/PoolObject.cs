@@ -15,6 +15,7 @@ public class PoolObject : MonoBehaviour, IPoolObject
     public void ResetObject()
     {
         IsAvailable = true;
+        gameObject.SetActive(false);
     }
 
     public void DestroyObject()

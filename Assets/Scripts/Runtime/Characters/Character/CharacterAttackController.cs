@@ -26,7 +26,7 @@
 
         public virtual void GetEnemies()
         {
-            //if (_targetDamagable != null && !_targetDamagable.GetIsDead()) return;
+            if (_targetDamagable != null && !_targetDamagable.GetIsDead()) return;
             _timer += Time.deltaTime;
             if (_timer < _checkEnemyTimer) return;
             _timer = 0;

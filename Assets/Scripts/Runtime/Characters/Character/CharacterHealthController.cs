@@ -5,27 +5,30 @@
     public abstract class CharacterHealthController : MonoBehaviour, IDamagable, ICharacterHealthController
     {
         private Character _character;
-        private bool _isDead { get;  set; }
+        private ICharacterAnim _characterAnim;
+        public bool IsDead { get;  set; }
 
         private void Start()
         {
             _character = GetComponent<Character>();
+            _characterAnim = GetComponent<ICharacterAnim>();
             SetCharacterHealthData(_character.CharacterData);
         }
 
         public void TakeDamage(int damage)
         {
-            if (_isDead) return;
+            if (IsDead) return;
             _character.MaxHealth -= damage;
             if (_character.MaxHealth <= 0)
             {
-                _isDead = true;
+                _characterAnim.Death();
+                IsDead = true;
             }
         }
 
         public bool GetIsDead()
         {
-            return _isDead;
+            return IsDead;
         }
 
 
